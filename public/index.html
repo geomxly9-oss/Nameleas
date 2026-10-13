@@ -164,6 +164,7 @@
             <li>📞 +1 (555) 010-2030</li>
             <li>✉️ hello@nameleas-events.example</li>
             <li>🕘 Mon–Sat, 9am–7pm</li>
+            <li>📍 We cover City Centre, North, South, East and West — and travel further on request</li>
           </ul>
         </div>
 
@@ -208,8 +209,24 @@
               <input name="guests" type="number" min="1" max="10000" required>
             </label>
           </div>
-          <label>Venue / city
-            <input name="location">
+          <div class="row">
+            <label>Location*
+              <select name="location" required>
+                <option value="">Select…</option>
+                <option>City Centre</option>
+                <option>North</option>
+                <option>South</option>
+                <option>East</option>
+                <option>West</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <label id="other-location" hidden>Which city / area?*
+              <input name="otherLocation" disabled>
+            </label>
+          </div>
+          <label>Venue name or address
+            <input name="venue" placeholder="Leave blank if you need us to find a venue">
           </label>
           <label>Anything else we should know?
             <textarea name="notes" rows="3"></textarea>

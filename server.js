@@ -26,7 +26,8 @@ const MIME = {
 
 const EVENT_TYPES = ['Wedding', 'Corporate', 'Birthday / Party', 'Concert / Festival', 'Other'];
 const PACKAGES = ['Basic', 'Standard', 'Premium', 'Not sure yet'];
-const STATUSES = ['pending', 'confirmed', 'completed', 'cancelled'];
+const LOCATIONS = ['City Centre', 'North', 'South', 'East', 'West'];
+const STATUSES =['pending', 'confirmed', 'completed', 'cancelled'];
 
 function loadBookings() {
   try {
@@ -80,8 +81,11 @@ function validateBooking(input) {
     date: str(input.date, 10),
     guests: Number(input.guests),
     location: str(input.location),
+    venue: str(input.venue),
     notes: str(input.notes, 2000),
   };
+  if (b.location === 'Other') b.location = str(input.otherLocation);
+  else if (!LOCATIONS.includes(b.location)) b.location = '';
   if (!b.name || !b.phone) return { error: 'Name and phone are required.' };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email)) return { error: 'Please enter a valid email.' };
   if (!EVENT_TYPES.includes(b.eventType)) return { error: 'Please choose an event type.' };
@@ -89,6 +93,7 @@ function validateBooking(input) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(b.date) || b.date < new Date().toISOString().slice(0, 10)) {
     return { error: 'Please choose a future event date.' };
   }
+  if (!b.location) return { error: 'Please choose a location.' };
   if (!Number.isInteger(b.guests) || b.guests < 1 || b.guests > 10000) {
     return { error: 'Guests must be between 1 and 10,000.' };
   }

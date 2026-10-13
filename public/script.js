@@ -23,6 +23,16 @@ const success = $('#booking-success');
 const today = new Date().toISOString().slice(0, 10);
 form.date.min = today;
 
+// Show the free-text city field only when "Other" location is picked
+const otherLocation = $('#other-location');
+function syncOtherLocation() {
+  const isOther = form.location.value === 'Other';
+  otherLocation.hidden = !isOther;
+  form.otherLocation.disabled = !isOther;
+  form.otherLocation.required = isOther;
+}
+form.location.addEventListener('change', syncOtherLocation);
+
 // "Choose package" buttons prefill the form and jump to it
 document.querySelectorAll('.choose').forEach((btn) => {
   btn.addEventListener('click', () => {
@@ -91,6 +101,7 @@ form.addEventListener('submit', async (e) => {
     form.hidden = true;
     success.hidden = false;
     form.reset();
+    syncOtherLocation();
   } catch (err) {
     errorBox.textContent = err.message;
     errorBox.hidden = false;

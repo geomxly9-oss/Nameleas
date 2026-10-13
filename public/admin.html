@@ -33,7 +33,7 @@
           <table class="admin-table">
             <thead>
               <tr>
-                <th>Ref</th><th>Client</th><th>Event</th><th>Date</th>
+                <th>Ref</th><th>Client</th><th>Event</th><th>Location</th><th>Date</th>
                 <th>Guests</th><th>Package</th><th>Notes</th><th>Status</th>
               </tr>
             </thead>
@@ -70,7 +70,8 @@
         <tr>
           <td><strong>${esc(b.id)}</strong></td>
           <td>${esc(b.name)}<br><a href="mailto:${esc(b.email)}">${esc(b.email)}</a><br>${esc(b.phone)}</td>
-          <td>${esc(b.eventType)}<br><small>${esc(b.location)}</small></td>
+          <td>${esc(b.eventType)}</td>
+          <td>${esc(b.location)}<br><small>${esc(b.venue)}</small></td>
           <td>${esc(b.date)}</td>
           <td>${esc(b.guests)}</td>
           <td>${esc(b.package)}</td>
@@ -80,7 +81,7 @@
               ${STATUSES.map((s) => `<option ${s === b.status ? 'selected' : ''}>${s}</option>`).join('')}
             </select>
           </td>
-        </tr>`).join('') : '<tr><td colspan="8">No bookings yet.</td></tr>';
+        </tr>`).join('') : '<tr><td colspan="9">No bookings yet.</td></tr>';
     }
 
     async function load() {
