@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kickbacks.ai — Money back on what you already buy</title>
+  <meta name="description" content="Kickbacks.ai finds, activates, and tracks cashback on your everyday purchases, so you get money back without hunting for offers.">
+  <meta property="og:title" content="Kickbacks.ai">
+  <meta property="og:description" content="Money back on what you already buy. AI finds the offers, you keep the cash.">
+  <meta name="theme-color" content="#0f1a14">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23c8f169'/%3E%3Ctext x='16' y='23' font-family='Arial' font-weight='700' font-size='18' text-anchor='middle' fill='%230f1a14'%3EK%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f6f3ea;
+      --surface: #ffffff;
+      --ink: #0f1a14;
+      --muted: #55615a;
+      --line: #dcd7c8;
+      --accent: #c8f169;
+      --accent-ink: #0f1a14;
+      --deep: #0f1a14;
+      --deep-ink: #f6f3ea;
+      --radius: 18px;
+      --max: 1120px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0c120e;
+        --surface: #141c17;
+        --ink: #eef2ea;
+        --muted: #9aa69e;
+        --line: #26302a;
+        --deep: #c8f169;
+        --deep-ink: #0f1a14;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 400 17px/1.6 "Inter", system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3 {
+      font-family: "Bricolage Grotesque", "Inter", sans-serif;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+    a { color: inherit; }
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+    .eyebrow {
+      font-size: 13px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+    }
+
+    /* Nav */
+    nav { padding: 20px 0; }
+    nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font: 800 22px/1 "Bricolage Grotesque", sans-serif; text-decoration: none;
+    }
+    .logo-mark {
+      width: 32px; height: 32px; border-radius: 9px; background: var(--accent);
+      color: var(--accent-ink); display: grid; place-items: center; font-size: 18px;
+    }
+    .logo span.tld { color: var(--muted); font-weight: 500; }
+    .nav-links { display: flex; gap: 28px; align-items: center; font-size: 15px; }
+    .nav-links a { text-decoration: none; color: var(--muted); }
+    .nav-links a:hover { color: var(--ink); }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px 22px; border-radius: 999px; border: 0; cursor: pointer;
+      font: 600 16px/1 "Inter", sans-serif; text-decoration: none;
+      background: var(--accent); color: var(--accent-ink);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px -8px rgba(15, 26, 20, .45); }
+    .btn:focus-visible, input:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+    .btn.small { padding: 10px 16px; font-size: 14px; }
+
+    /* Hero */
+    .hero { padding: 56px 0 88px; }
+    .hero .wrap { display: grid; grid-template-columns: 1.15fr 1fr; gap: 56px; align-items: center; }
+    .hero h1 { font-size: clamp(44px, 7vw, 84px); font-weight: 800; }
+    .hero h1 mark {
+      background: var(--accent); color: var(--accent-ink);
+      padding: 0 .12em; border-radius: .12em;
+      -webkit-box-decoration-break: clone; box-decoration-break: clone;
+    }
+    .hero p.lede { font-size: 20px; color: var(--muted); max-width: 32ch; margin: 24px 0 32px; }
+
+    .waitlist { display: flex; gap: 10px; flex-wrap: wrap; max-width: 480px; }
+    .waitlist input {
+      flex: 1 1 220px; min-width: 0; padding: 14px 18px; border-radius: 999px;
+      border: 1.5px solid var(--line); background: var(--surface); color: var(--ink);
+      font: 400 16px/1 "Inter", sans-serif;
+    }
+    .form-note { font-size: 14px; color: var(--muted); margin-top: 12px; min-height: 1.4em; }
+    .form-note.ok { color: var(--ink); font-weight: 600; }
+
+    /* Receipt card */
+    .receipt {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 28px; box-shadow: 0 30px 60px -30px rgba(15, 26, 20, .35);
+      transform: rotate(1.5deg); position: relative;
+    }
+    .receipt h3 { font-size: 15px; font-family: "Inter", sans-serif; letter-spacing: 0; color: var(--muted); font-weight: 500; }
+    .receipt ul { list-style: none; padding: 0; margin: 18px 0; }
+    .receipt li {
+      display: grid; grid-template-columns: 1fr auto; gap: 4px 12px;
+      padding: 12px 0; border-bottom: 1px dashed var(--line); font-size: 15px;
+    }
+    .receipt li small { grid-column: 1 / -1; color: var(--muted); font-size: 13px; }
+    .receipt .back { font-weight: 600; color: var(--ink); }
+    .receipt .total {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font: 700 28px/1 "Bricolage Grotesque", sans-serif; padding-top: 8px;
+    }
+    .receipt .total span:first-child { font: 500 15px/1 "Inter", sans-serif; color: var(--muted); }
+    .stamp {
+      position: absolute; top: -14px; right: -10px; background: var(--accent); color: var(--accent-ink);
+      font: 700 13px/1 "Inter", sans-serif; padding: 9px 13px; border-radius: 999px; transform: rotate(6deg);
+    }
+    .example-tag { font-size: 12px; color: var(--muted); margin-top: 14px; }
+
+    /* Sections */
+    section { padding: 88px 0; }
+    section h2 { font-size: clamp(34px, 4.6vw, 54px); font-weight: 700; margin: 12px 0 0; max-width: 18ch; }
+    .section-head { margin-bottom: 48px; }
+
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; counter-reset: step; }
+    .step {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px;
+    }
+    .step::before {
+      counter-increment: step; content: "0" counter(step);
+      font: 700 15px/1 "Bricolage Grotesque", sans-serif; color: var(--muted);
+    }
+    .step h3 { font-size: 24px; margin: 18px 0 10px; }
+    .step p { margin: 0; color: var(--muted); }
+
+    /* Calculator */
+    .calc { background: var(--deep); color: var(--deep-ink); border-radius: 28px; }
+    .calc .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+    .calc .eyebrow, .calc p { color: inherit; opacity: .75; }
+    .calc-box { display: grid; gap: 28px; }
+    .calc label { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 10px; }
+    .calc input[type="range"] { width: 100%; accent-color: var(--accent); }
+    @media (prefers-color-scheme: dark) { .calc input[type="range"] { accent-color: var(--deep-ink); } }
+    .calc-out { font: 800 clamp(56px, 8vw, 96px)/1 "Bricolage Grotesque", sans-serif; letter-spacing: -0.03em; }
+    .calc-out small { font: 500 18px/1 "Inter", sans-serif; opacity: .75; letter-spacing: 0; }
+    .calc .fine { font-size: 13px; }
+
+    .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .feature { border-top: 2px solid var(--ink); padding-top: 20px; }
+    .feature h3 { font-size: 24px; margin-bottom: 8px; }
+    .feature p { margin: 0; color: var(--muted); max-width: 44ch; }
+
+    details { border-bottom: 1px solid var(--line); padding: 20px 0; }
+    details summary {
+      cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px;
+      font: 700 21px/1.3 "Bricolage Grotesque", sans-serif;
+    }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::after { content: "+"; font-size: 26px; line-height: 1; transition: transform .2s; }
+    details[open] summary::after { transform: rotate(45deg); }
+    details p { color: var(--muted); margin: 12px 0 0; max-width: 64ch; }
+    .faq { max-width: 780px; }
+
+    .cta { text-align: center; }
+    .cta h2 { margin: 12px auto 28px; }
+    .cta .waitlist { margin: 0 auto; justify-content: center; }
+
+    footer { padding: 40px 0 56px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+    footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+    @media (max-width: 860px) {
+      .hero .wrap, .calc .wrap { grid-template-columns: 1fr; gap: 48px; }
+      .steps, .features { grid-template-columns: 1fr; }
+      .receipt { transform: none; }
+      .nav-links a:not(.btn) { display: none; }
+      section { padding: 64px 0; }
+      .calc { border-radius: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav aria-label="Primary">
+    <div class="wrap">
+      <a class="logo" href="#top" aria-label="Kickbacks.ai home">
+        <span class="logo-mark" aria-hidden="true">K</span>
+        <span>Kickbacks<span class="tld">.ai</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="#how">How it works</a>
+        <a href="#calculator">Estimate</a>
+        <a href="#faq">FAQ</a>
+        <a class="btn small" href="#join">Join the waitlist</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <header class="hero">
+      <div class="wrap">
+        <div>
+          <p class="eyebrow">Cashback on autopilot</p>
+          <h1>Get a <mark>kickback</mark> on everything you buy.</h1>
+          <p class="lede">Kickbacks.ai finds the cashback offers you're missing, activates them for you, and tracks every payout until it lands.</p>
+          <form class="waitlist" data-waitlist novalidate>
+            <input id="email-hero" type="email" name="email" placeholder="you@email.com" autocomplete="email" required aria-label="Email address">
+            <button class="btn" type="submit">Get early access</button>
+          </form>
+          <p class="form-note" aria-live="polite">Free to join. No card required.</p>
+        </div>
+
+        <div class="receipt" aria-label="Example of a weekly cashback summary">
+          <span class="stamp">+ $14.62 this week</span>
+          <h3>Your kickbacks · this week</h3>
+          <ul>
+            <li><span>Groceries</span><span class="back">+$4.80</span><small>3% back · offer auto-activated</small></li>
+            <li><span>Running shoes</span><span class="back">+$7.20</span><small>6% back · found at checkout</small></li>
+            <li><span>Coffee subscription</span><span class="back">+$1.12</span><small>8% back · recurring</small></li>
+            <li><span>Gas</span><span class="back">+$1.50</span><small>$0.05/gal · card-linked</small></li>
+          </ul>
+          <div class="total"><span>Heading to your account</span><span>$14.62</span></div>
+          <p class="example-tag">Illustrative example, not real account data.</p>
+        </div>
+      </div>
+    </header>
+
+    <section id="how">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">How it works</p>
+          <h2>Shop like normal. We handle the rest.</h2>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <h3>Connect once</h3>
+            <p>Link a card or add the browser extension. It takes about a minute, and you choose exactly what Kickbacks can see.</p>
+          </article>
+          <article class="step">
+            <h3>AI finds the offers</h3>
+            <p>Kickbacks compares offers across cashback portals, card programs, and retailers, then activates the best one before you pay.</p>
+          </article>
+          <article class="step">
+            <h3>Cash comes back</h3>
+            <p>Every pending reward is tracked until it's paid. Cash out to your bank or PayPal when you're ready.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="calculator" class="calc" aria-labelledby="calc-title">
+      <div class="wrap">
+        <div>
+          <p class="eyebrow">Estimate</p>
+          <h2 id="calc-title">What are you leaving on the table?</h2>
+          <p>Move the sliders to see what everyday spending could earn back in a year.</p>
+        </div>
+        <div class="calc-box">
+          <div>
+            <label for="spend"><span>Monthly spending</span><output id="spend-out" for="spend">$1,500</output></label>
+            <input id="spend" type="range" min="100" max="8000" step="100" value="1500">
+          </div>
+          <div>
+            <label for="rate"><span>Average cashback rate</span><output id="rate-out" for="rate">2.0%</output></label>
+            <input id="rate" type="range" min="0.5" max="6" step="0.5" value="2">
+          </div>
+          <div>
+            <div class="calc-out"><span id="yearly">$360</span> <small>/ year</small></div>
+            <p class="fine">Estimate only. Actual rewards depend on the merchants, offers, and terms available to you.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Why Kickbacks</p>
+          <h2>Built so you never think about cashback again.</h2>
+        </div>
+        <div class="features">
+          <div class="feature">
+            <h3>Best offer, every time</h3>
+            <p>Instead of checking five apps, Kickbacks compares them and picks the highest payout for each purchase.</p>
+          </div>
+          <div class="feature">
+            <h3>Nothing forgotten</h3>
+            <p>Card-linked offers expire unused all the time. Kickbacks activates them automatically so they're ready when you shop.</p>
+          </div>
+          <div class="feature">
+            <h3>Payout tracking</h3>
+            <p>See what's pending, what's confirmed, and what's late. If a reward goes missing, we flag it and help you claim it.</p>
+          </div>
+          <div class="feature">
+            <h3>Privacy first</h3>
+            <p>We never sell your purchase data. Disconnect any account at any time, and your data goes with it.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="wrap faq">
+        <div class="section-head">
+          <p class="eyebrow">FAQ</p>
+          <h2>Questions, answered.</h2>
+        </div>
+        <details>
+          <summary>How does Kickbacks make money?</summary>
+          <p>Retailers pay a commission when you shop through an offer. We share most of that with you and keep a small portion. We don't charge you for the core service.</p>
+        </details>
+        <details>
+          <summary>Do I need a new credit card?</summary>
+          <p>No. Kickbacks works with the cards you already have and stacks on top of the rewards they already earn.</p>
+        </details>
+        <details>
+          <summary>When will it launch?</summary>
+          <p>We're opening access in waves. Join the waitlist and we'll email you when your spot is ready.</p>
+        </details>
+        <details>
+          <summary>Is my data safe?</summary>
+          <p>We use read-only connections, encrypt data in transit and at rest, and never sell your personal or purchase information.</p>
+        </details>
+      </div>
+    </section>
+
+    <section id="join" class="cta">
+      <div class="wrap">
+        <p class="eyebrow">Early access</p>
+        <h2>Start getting paid back.</h2>
+        <form class="waitlist" data-waitlist novalidate>
+          <input id="email-cta" type="email" name="email" placeholder="you@email.com" autocomplete="email" required aria-label="Email address">
+          <button class="btn" type="submit">Join the waitlist</button>
+        </form>
+        <p class="form-note" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© <span id="year">2026</span> Kickbacks.ai</span>
+      <span>Money back on what you already buy.</span>
+    </div>
+  </footer>
+
+  <script>
+    // Set to your form provider's endpoint (Formspree, Buttondown, etc.) to collect signups.
+    const WAITLIST_ENDPOINT = "";
+
+    const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+    const spend = document.getElementById("spend");
+    const rate = document.getElementById("rate");
+
+    function updateCalc() {
+      const s = Number(spend.value);
+      const r = Number(rate.value);
+      document.getElementById("spend-out").textContent = money.format(s);
+      document.getElementById("rate-out").textContent = r.toFixed(1) + "%";
+      document.getElementById("yearly").textContent = money.format(s * 12 * r / 100);
+    }
+    spend.addEventListener("input", updateCalc);
+    rate.addEventListener("input", updateCalc);
+    updateCalc();
+
+    document.querySelectorAll("[data-waitlist]").forEach((form) => {
+      const note = form.nextElementSibling;
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const input = form.querySelector("input[type=email]");
+        if (!input.checkValidity()) {
+          note.className = "form-note";
+          note.textContent = "Please enter a valid email address.";
+          input.focus();
+          return;
+        }
+        const button = form.querySelector("button");
+        button.disabled = true;
+        try {
+          if (WAITLIST_ENDPOINT) {
+            const res = await fetch(WAITLIST_ENDPOINT, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify({ email: input.value }),
+            });
+            if (!res.ok) throw new Error(res.statusText);
+          }
+          note.className = "form-note ok";
+          note.textContent = "You're on the list. We'll be in touch.";
+          form.reset();
+        } catch {
+          note.className = "form-note";
+          note.textContent = "Something went wrong. Please try again.";
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
