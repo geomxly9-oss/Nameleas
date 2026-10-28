@@ -394,17 +394,21 @@
           input.focus();
           return;
         }
+        // No endpoint yet: say so rather than claiming a signup we would throw away.
+        if (!WAITLIST_ENDPOINT) {
+          note.className = "form-note";
+          note.textContent = "Signups open soon. Please check back in a few days.";
+          return;
+        }
         const button = form.querySelector("button");
         button.disabled = true;
         try {
-          if (WAITLIST_ENDPOINT) {
-            const res = await fetch(WAITLIST_ENDPOINT, {
-              method: "POST",
-              headers: { "Content-Type": "application/json", Accept: "application/json" },
-              body: JSON.stringify({ email: input.value }),
-            });
-            if (!res.ok) throw new Error(res.statusText);
-          }
+          const res = await fetch(WAITLIST_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({ email: input.value }),
+          });
+          if (!res.ok) throw new Error(res.statusText);
           note.className = "form-note ok";
           note.textContent = "You're on the list. We'll be in touch.";
           form.reset();
