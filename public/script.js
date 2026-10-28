@@ -19,9 +19,8 @@ const form = $('#booking-form');
 const errorBox = $('.form-error', form);
 const success = $('#booking-success');
 
-// Event date must be today or later
-const today = new Date().toISOString().slice(0, 10);
-form.date.min = today;
+// Event date must be today or later (the customer's local day, as YYYY-MM-DD)
+form.date.min = new Date().toLocaleDateString('en-CA');
 
 // Show the free-text city field only when "Other" location is picked
 const otherLocation = $('#other-location');
@@ -60,31 +59,20 @@ function validate() {
   return true;
 }
 
-// Saves to the server API when available; falls back to this browser's
-// storage when the page is opened directly as a file.
 async function saveBooking(data) {
+  let res, body;
   try {
-    const res = await fetch('/api/bookings', {
+    res = await fetch('/api/bookings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    const body = await res.json();
-    if (!res.ok) throw Object.assign(new Error(body.error || 'Booking failed'), { fromServer: true });
-    return body.booking;
-  } catch (err) {
-    if (err.fromServer) throw err;
-    const booking = {
-      ...data,
-      id: 'NE-' + Date.now().toString(36).toUpperCase(),
-      status: 'pending',
-      createdAt: new Date().toISOString(),
-    };
-    const list = JSON.parse(localStorage.getItem('bookings') || '[]');
-    list.push(booking);
-    localStorage.setItem('bookings', JSON.stringify(list));
-    return booking;
+    body = await res.json();
+  } catch {
+    throw new Error('We could not send your booking. Please try again or call us.');
   }
+  if (!res.ok) throw new Error(body.error || 'Booking failed. Please try again or call us.');
+  return body.booking;
 }
 
 form.addEventListener('submit', async (e) => {

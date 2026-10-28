@@ -9,7 +9,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 const PORT = Number(process.env.PORT) || 3000;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'changeme';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const DATA_FILE = path.join(__dirname, 'data', 'bookings.json');
 
@@ -29,17 +29,26 @@ const PACKAGES = ['Basic', 'Standard', 'Premium', 'Not sure yet'];
 const LOCATIONS = ['City Centre', 'North', 'South', 'East', 'West'];
 const STATUSES =['pending', 'confirmed', 'completed', 'cancelled'];
 
+// Only a missing file means "no bookings yet". A damaged file throws, so the
+// next save can never overwrite the existing bookings with a one-item list.
 function loadBookings() {
+  let raw;
   try {
-    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-  } catch {
-    return [];
+    raw = fs.readFileSync(DATA_FILE, 'utf8');
+  } catch (err) {
+    if (err.code === 'ENOENT') return [];
+    throw err;
   }
+  return JSON.parse(raw);
 }
 
+// Write to a temp file and rename it over the real one, so a crash mid-write
+// never leaves a half-written bookings file.
 function saveBookings(list) {
   fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
-  fs.writeFileSync(DATA_FILE, JSON.stringify(list, null, 2));
+  const tmp = DATA_FILE + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(list, null, 2));
+  fs.renameSync(tmp, DATA_FILE);
 }
 
 function send(res, status, body) {
@@ -52,7 +61,10 @@ function readJson(req) {
     let raw = '';
     req.on('data', (chunk) => {
       raw += chunk;
-      if (raw.length > 20_000) reject(new Error('Request too large'));
+      if (raw.length > 20_000) {
+        reject(new Error('Request too large'));
+        req.destroy();
+      }
     });
     req.on('end', () => {
       try {
@@ -67,7 +79,7 @@ function readJson(req) {
 function isAdmin(req) {
   const given = Buffer.from(String(req.headers['x-admin-password'] || ''));
   const expected = Buffer.from(ADMIN_PASSWORD);
-  return given.length === expected.length && crypto.timingSafeEqual(given, expected);
+  return expected.length > 0 && given.length === expected.length && crypto.timingSafeEqual(given, expected);
 }
 
 function validateBooking(input) {
@@ -90,7 +102,10 @@ function validateBooking(input) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email)) return { error: 'Please enter a valid email.' };
   if (!EVENT_TYPES.includes(b.eventType)) return { error: 'Please choose an event type.' };
   if (!PACKAGES.includes(b.package)) return { error: 'Please choose a package.' };
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(b.date) || b.date < new Date().toISOString().slice(0, 10)) {
+  // Yesterday in UTC is still "today" for a customer west of UTC.
+  const day = new Date(b.date + 'T00:00:00Z');
+  const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
+  if (isNaN(day) || day.toISOString().slice(0, 10) !== b.date || b.date < yesterday) {
     return { error: 'Please choose a future event date.' };
   }
   if (!b.location) return { error: 'Please choose a location.' };
@@ -106,7 +121,7 @@ async function handleApi(req, res, url) {
     if (error) return send(res, 400, { error });
     const list = loadBookings();
     const record = {
-      id: 'NE-' + crypto.randomBytes(3).toString('hex').toUpperCase(),
+      id: 'NE-' + crypto.randomBytes(5).toString('hex').toUpperCase(),
       ...booking,
       status: 'pending',
       createdAt: new Date().toISOString(),
@@ -161,13 +176,15 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname.startsWith('/api/')) return await handleApi(req, res, url);
     serveStatic(res, url);
   } catch (err) {
+    console.error(err);
     send(res, 400, { error: err.message });
   }
 });
 
 if (require.main === module) {
   if (!process.env.ADMIN_PASSWORD) {
-    console.warn('Warning: ADMIN_PASSWORD not set — using default "changeme".');
+    console.error('ADMIN_PASSWORD is not set. Start with: ADMIN_PASSWORD=your-secret npm start');
+    process.exit(1);
   }
   server.listen(PORT, () => console.log(`Nameleas Events running at http://localhost:${PORT}`));
 }

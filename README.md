@@ -23,7 +23,9 @@ Then open:
 
 Bookings are saved to `data/bookings.json` (not committed to git).
 
-If you open `public/index.html` directly without the server, the booking form still works but saves bookings only in that browser.
+The server will not start without `ADMIN_PASSWORD`.
+
+Run the tests with `npm test`.
 
 ## Customise
 

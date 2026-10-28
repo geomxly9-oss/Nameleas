@@ -108,11 +108,15 @@
 
     document.getElementById('rows').addEventListener('change', async (e) => {
       if (!e.target.matches('.status')) return;
-      await api(`/api/bookings/${e.target.dataset.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ status: e.target.value }),
-      });
-      load();
+      try {
+        await api(`/api/bookings/${e.target.dataset.id}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ status: e.target.value }),
+        });
+      } catch (error) {
+        alert('Status not saved: ' + error.message);
+      }
+      load().catch((error) => alert('Could not reload bookings: ' + error.message));
     });
   </script>
 </body>
