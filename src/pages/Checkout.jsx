@@ -5,6 +5,7 @@ import { useCart, cartLines, cartTotal } from '../store/cart'
 import { formatPrice } from '../lib/format'
 import { LineItem } from '../components/CartDrawer'
 import { Mark } from '../components/Logo'
+import { scrollToTarget } from '../lib/scroll'
 
 const COUNTRIES = ['Switzerland', 'France', 'Germany', 'Italy', 'United Kingdom', 'United Arab Emirates', 'Japan', 'Singapore', 'United States', 'Other']
 const BOUTIQUES = ['Geneva, Rue du Rhône 48', 'Paris, Place Vendôme 21', 'Tokyo, Ginza 6-chome', 'Dubai, Mall of the Emirates', 'New York, Madison Avenue 711']
@@ -59,6 +60,7 @@ export default function Checkout() {
     const ref = `VT-${String(Date.now()).slice(-6)}`
     setOrder({ ref, total, count: lines.length, email: form.email.trim(), method, boutique: form.boutique })
     clear()
+    scrollToTarget(0, { immediate: true })
   }
 
   const ref = useMemo(() => (order ? order.ref : null), [order])

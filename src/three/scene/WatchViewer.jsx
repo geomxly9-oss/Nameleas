@@ -80,7 +80,6 @@ function Picker({ interaction, ctl }) {
       for (const h of hits) {
         let o = h.object
         if (o.userData.noPick) continue
-        if (o.material && o.material.opacity < 0.3) continue
         while (o && !o.userData.part) o = o.parent
         if (o) return o.userData.part
       }

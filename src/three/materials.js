@@ -123,7 +123,7 @@ export function watchMaterials(product, quality = 'high') {
       metalness: m.dial.pattern === 'sunburst' ? 0.55 : 0.15,
       clearcoat: m.dial.pattern === 'grain' ? 0 : 0.35,
       clearcoatRoughness: 0.18,
-      envMapIntensity: 0.75,
+      envMapIntensity: m.dial.pattern === 'sunburst' ? 0.75 : 0.5,
       alphaTest: m.dial.pattern === 'skeleton' || m.complications?.tourbillon ? 0.5 : 0,
       side: THREE.DoubleSide,
     })

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useLocation } from 'react-router'
 import Logo from './Logo'
@@ -18,6 +18,7 @@ export default function Header() {
   const location = useLocation()
   const count = cartCount(items)
 
+  const pinUntil = useRef(0)
   useEffect(() => {
     let last = 0
     let sc = false
@@ -25,12 +26,19 @@ export default function Header() {
     return onTick(() => {
       const y = currentScroll()
       const s = y > 24
-      const h = y > 600 && y > last + 2 ? true : y < last - 2 ? false : hd
+      let h = y > 600 && y > last + 2 ? true : y < last - 2 ? false : hd
+      if (performance.now() < pinUntil.current) h = false
       last = y
       if (s !== sc) setScrolled((sc = s))
       if (h !== hd) setHidden((hd = h))
     }, 5)
   }, [])
+
+  // reveal the header (and its cart count) for a few seconds after an item is added
+  useEffect(() => {
+    if (!count) return
+    pinUntil.current = performance.now() + 4000
+  }, [count])
 
   useEffect(() => {
     stopScroll(menu)

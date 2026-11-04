@@ -114,7 +114,6 @@ function StagePicker() {
       for (const h of hits) {
         let o = h.object
         if (o.userData.noPick) continue
-        if (o.material && o.material.opacity < 0.3) continue
         while (o && !o.userData.part) o = o.parent
         if (o) return o.userData.part
       }
@@ -158,8 +157,8 @@ function Rig({ product }) {
       stage.userPitch *= 0.9
     }
 
-    const heroS = fit(portrait ? 0.56 : 0.66, 7.0)
-    const hero = { x: 0, y: portrait ? 0.02 * H0 : 0.012 * H0, z: 0, rx: 0.12, ry: spin.current, s: heroS, px: 0, py: 0, pz: 0 }
+    const heroS = fit(portrait ? 0.5 : 0.62, 7.0)
+    const hero = { x: 0, y: portrait ? 0.07 * H0 : 0.012 * H0, z: 0, rx: 0.12, ry: spin.current, s: heroS, px: 0, py: 0, pz: 0 }
     const featured = {
       x: portrait ? 0 : 0.2 * W0,
       y: portrait ? 0.2 * H0 : -0.01 * H0,
@@ -171,37 +170,37 @@ function Rig({ product }) {
       py: 0,
       pz: 0,
     }
-    const dialS = (portrait ? 0.86 * W0 : 0.72 * H0) / (2 * d.Rd)
-    const craft1 = { x: portrait ? 0 : 0.2 * W0, y: portrait ? 0.17 * H0 : 0, z: 0, rx: 0.05, ry: -0.2 + 0.25 * seg(P.craft, 0, 0.28), s: dialS, px: 0, py: 0, pz: 0 }
+    const dialS = (portrait ? Math.min(0.72 * W0, 0.3 * H0) : 0.72 * H0) / (2 * d.Rd)
+    const craft1 = { x: portrait ? 0 : 0.2 * W0, y: portrait ? 0.31 * H0 : 0, z: 0, rx: 0.05, ry: -0.2 + 0.25 * seg(P.craft, 0, 0.28), s: dialS, px: 0, py: 0, pz: 0 }
     const craft2 = {
       x: portrait ? 0 : 0.2 * W0,
-      y: portrait ? 0.16 * H0 : 0,
+      y: portrait ? 0.27 * H0 : 0,
       z: 0,
       rx: 0.16,
       ry: -1.22 + 0.2 * seg(P.craft, 0.4, 0.62),
-      s: heroS * (portrait ? 1.8 : 1.85),
+      s: heroS * (portrait ? 1.25 : 1.85),
       px: d.R * 0.75,
       py: 0,
       pz: 0,
     }
     const craft3 = {
       x: portrait ? 0 : 0.19 * W0,
-      y: portrait ? 0.14 * H0 : -0.02 * H0,
+      y: portrait ? 0.25 * H0 : -0.02 * H0,
       z: 0,
       rx: 0.38,
       ry: 2.45 + 0.25 * seg(P.craft, 0.75, 1),
-      s: heroS * (portrait ? 1.35 : 1.45),
+      s: heroS * (portrait ? 1.05 : 1.45),
       px: 0,
       py: 0,
       pz: -3.1 * d.k,
     }
-    const compS = portrait ? fit(0.95, 11.5) : fit(0.78, 12.2)
+    const compS = portrait ? (0.45 * H0) / 11 : fit(0.78, 12.2)
     const comp = {
       x: portrait ? 0 : -0.1 * W0,
-      y: portrait ? 0.13 * H0 : -0.1 * H0,
+      y: portrait ? 0.03 * H0 : -0.1 * H0,
       z: 0,
-      rx: 0.3 + stage.userPitch,
-      ry: -0.82 + 0.5 * P.comp + stage.userYaw,
+      rx: (portrait ? 1.0 : 0.3) + stage.userPitch,
+      ry: (portrait ? -0.3 : -0.82) + 0.5 * P.comp + stage.userYaw,
       s: compS,
       px: 0,
       py: 0,

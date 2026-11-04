@@ -861,6 +861,7 @@ main {
   max-width: 30em;
 }
 .craft__fact b {
+  white-space: nowrap;
   font-family: var(--font-display);
   font-weight: 460;
   font-size: clamp(2.2rem, 3.6vw, 3.4rem);
@@ -2224,7 +2225,13 @@ main {
     gap: 16px;
   }
   .craft__steps {
-    min-height: 210px;
+    min-height: 300px;
+  }
+  .craft__progress {
+    order: -1;
+  }
+  .craft .h2 {
+    font-size: 1.7rem;
   }
   .craft {
     align-items: flex-end;
@@ -2301,6 +2308,36 @@ main {
     position: relative;
     top: 0;
     order: -1;
+  }
+  .pdp__tools {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    gap: 8px;
+  }
+  .pdp__tools .seg {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    justify-content: flex-start;
+  }
+  .pdp__tools .seg::-webkit-scrollbar {
+    display: none;
+  }
+  .pdp__tools .seg button {
+    flex: none;
+  }
+  .pdp__tools .seg:last-child {
+    align-self: flex-end;
+  }
+  .pdp__part {
+    top: auto;
+    bottom: 100px;
+    left: 10px;
+    right: 10px;
+    width: auto;
   }
 }
 

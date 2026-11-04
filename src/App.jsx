@@ -14,7 +14,6 @@ import Home from './pages/Home'
 import Product from './pages/Product'
 import Checkout from './pages/Checkout'
 import NotFound from './pages/NotFound'
-import Lab from './pages/Lab'
 import { initScroll, getLenis } from './lib/scroll'
 
 initScroll()
@@ -51,7 +50,6 @@ function AppRoutes() {
         <Route path="/" element={<Page><Home /></Page>} />
         <Route path="/watch/:id" element={<Page><Product /></Page>} />
         <Route path="/checkout" element={<Page><Checkout /></Page>} />
-        <Route path="/lab" element={<Lab />} />
         <Route path="*" element={<Page><NotFound /></Page>} />
       </Routes>
     </AnimatePresence>
