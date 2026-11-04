@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { useUI } from '../store/ui'
 import { prefersReducedMotion, stopScroll } from '../lib/scroll'
+import { whenStable } from '../lib/ticker'
 
 /* The opening: a dial ring draws, the hands sweep to 10:10 (our V), then the curtain lifts. */
 export default function Preloader() {
@@ -26,6 +27,10 @@ export default function Preloader() {
       tl.fromTo('.preloader__h1', { rotate: 0 }, { rotate: -60, duration: reduce ? 0.01 : 1.2, ease: 'power3.inOut', transformOrigin: '66px 66px' }, 0.2)
       tl.fromTo('.preloader__h2', { rotate: 0 }, { rotate: 60 + 360, duration: reduce ? 0.01 : 1.3, ease: 'power3.inOut', transformOrigin: '66px 66px' }, 0.15)
       tl.fromTo('.preloader__name', { opacity: 0, letterSpacing: '0.6em' }, { opacity: 1, letterSpacing: '0.32em', duration: reduce ? 0.01 : 1.1, ease: 'power3.out' }, 0.3)
+      // hold on the drawn dial until the 3D scene is rendering smoothly
+      tl.addPause(reduce ? 0.04 : 1.5, () => {
+        whenStable().then(() => tl.resume())
+      })
       tl.call(() => setReady(true), null, reduce ? 0.05 : 1.55)
       tl.to(root.current, { clipPath: 'inset(0 0 100% 0)', duration: reduce ? 0.01 : 1.0, ease: 'expo.inOut' }, reduce ? 0.06 : 1.6)
     }, root)

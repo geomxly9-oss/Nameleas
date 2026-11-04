@@ -2,6 +2,8 @@
 
 An interactive e-commerce site for **Velora Time**, an original Swiss watch maison. Every watch is a live, procedurally-built 3D model you can turn, tilt, take apart and inspect.
 
+![Velora Time: hero, featured watch, craftsmanship macro, exploded components, collections and product page](docs/preview.png)
+
 There are no image files or 3D model downloads. The watches, dials, engravings, straps and movements are all generated in code at runtime.
 
 ## Run it
