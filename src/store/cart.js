@@ -36,10 +36,13 @@ export const useCart = create(
   ),
 )
 
+const safeQty = (q) => Math.min(5, Math.max(1, Math.floor(Number(q)) || 1))
+
+// Items are rehydrated from localStorage, so treat them as untrusted input.
 export const cartLines = (items) =>
-  items
-    .map((x) => ({ ...x, product: getProduct(x.id) }))
+  (Array.isArray(items) ? items : [])
+    .map((x) => ({ id: x?.id, qty: safeQty(x?.qty), product: getProduct(x?.id) }))
     .filter((x) => x.product)
 
-export const cartCount = (items) => items.reduce((a, b) => a + b.qty, 0)
+export const cartCount = (items) => cartLines(items).reduce((a, b) => a + b.qty, 0)
 export const cartTotal = (items) => cartLines(items).reduce((a, b) => a + b.product.price * b.qty, 0)
