@@ -75,7 +75,8 @@ export const glass = () =>
       ior: 1.77,
       specularIntensity: 1,
       specularColor: new THREE.Color('#e6fff7'),
-      envMapIntensity: 0.75,
+      // anti-reflective coated sapphire: a soft sheen, not a mirror
+      envMapIntensity: 0.32,
       transparent: true,
       depthWrite: false,
       blending: THREE.CustomBlending,
@@ -127,6 +128,8 @@ export function watchMaterials(product, quality = 'high') {
       alphaTest: m.dial.pattern === 'skeleton' || m.complications?.tourbillon ? 0.5 : 0,
       side: THREE.DoubleSide,
     })
+    // lacquer absorbs light: keep printed colours deep under bright studio light
+    dial.color.setScalar(0.74)
     if (dialTex.bumpMap) {
       dial.bumpMap = dialTex.bumpMap
       dial.bumpScale = 1.2
@@ -146,9 +149,11 @@ export function watchMaterials(product, quality = 'high') {
       const t = strapTexture(strap.type, strap.color, strap.stitch || strap.color).clone()
       t.needsUpdate = true
       strapMat = strap.type === 'leather'
-        ? new THREE.MeshPhysicalMaterial({ map: t, roughness: 0.55, sheen: 0.6, sheenColor: new THREE.Color('#C6F0E4'), sheenRoughness: 0.5, clearcoat: 0.25, clearcoatRoughness: 0.4 })
-        : new THREE.MeshPhysicalMaterial({ map: t, roughness: 0.6, sheen: 0.35, sheenColor: new THREE.Color('#A7E8D7') })
+        ? new THREE.MeshPhysicalMaterial({ map: t, roughness: 0.58, sheen: 0.25, sheenColor: new THREE.Color('#C6F0E4'), sheenRoughness: 0.6, clearcoat: 0.2, clearcoatRoughness: 0.45, envMapIntensity: 0.6 })
+        : new THREE.MeshPhysicalMaterial({ map: t, roughness: 0.62, sheen: 0.2, sheenColor: new THREE.Color('#A7E8D7'), envMapIntensity: 0.6 })
     }
+
+    if (strapMat) strapMat.color.setScalar(0.8)
 
     const insert = ['diver', 'tachy'].includes(m.bezel)
       ? new THREE.MeshPhysicalMaterial({ roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.03, envMapIntensity: 1.4 })

@@ -717,12 +717,25 @@ export function strapTexture(type, color, stitch) {
 }
 
 /* Room environment for PBR reflections (procedural "light-formers") */
-export function buildStudioScene() {
+export function buildStudioScene(hdr = null, hdrExposure = 0.36) {
   const scene = new THREE.Scene()
-  const box = new THREE.BoxGeometry(1, 1, 1)
-  const room = new THREE.Mesh(box, new THREE.MeshBasicMaterial({ color: new THREE.Color('#6f7775'), side: THREE.BackSide }))
-  room.scale.set(40, 40, 40)
-  scene.add(room)
+  if (hdr) {
+    // photographed studio as the room, so reflections carry real-world detail
+    // clamp the hottest light sources so they read as softboxes, not blown-out glare
+    const mat = new THREE.ShaderMaterial({
+      side: THREE.BackSide,
+      depthWrite: false,
+      uniforms: { map: { value: hdr }, exposure: { value: hdrExposure }, peak: { value: 2.4 } },
+      vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: 'uniform sampler2D map; uniform float exposure; uniform float peak; varying vec2 vUv; void main() { vec3 c = texture2D(map, vUv).rgb * exposure; gl_FragColor = vec4(min(c, vec3(peak)), 1.0); }',
+    })
+    scene.add(new THREE.Mesh(new THREE.SphereGeometry(30, 64, 32), mat))
+  } else {
+    const box = new THREE.BoxGeometry(1, 1, 1)
+    const room = new THREE.Mesh(box, new THREE.MeshBasicMaterial({ color: new THREE.Color('#6f7775'), side: THREE.BackSide }))
+    room.scale.set(40, 40, 40)
+    scene.add(room)
+  }
   const plane = new THREE.PlaneGeometry(1, 1)
   const panel = (color, intensity, w, h, pos, look = [0, 0, 0]) => {
     const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color(color).multiplyScalar(intensity), side: THREE.DoubleSide })
@@ -755,3 +768,4 @@ export function buildStudioScene() {
   flag(18, 5, [0, -9, 6])
   return scene
 }
+

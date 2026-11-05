@@ -716,8 +716,9 @@ export function buildBracelet(d, m) {
           ]
     const outerW = pieces[0].w * d.W0
     const centerW = pieces[1].w * d.W0
-    out.outerGeo = new RoundedBoxGeometry(outerW, thk, pitch * 0.93, 2, 0.05 * k)
-    out.centerGeo = new RoundedBoxGeometry(centerW, thk * 1.08, pitch * 0.93, 2, 0.05 * k)
+    // pillow-shaped links: generous radii read as polished, hand-finished metal
+    out.outerGeo = new RoundedBoxGeometry(outerW, thk, pitch * 0.95, 4, thk * 0.4)
+    out.centerGeo = new RoundedBoxGeometry(centerW, thk * 1.1, pitch * 0.95, 4, Math.min(thk * 0.48, centerW * 0.45))
     const base = { outer: [], center: [], centers: [] }
     const F = new THREE.Matrix4()
     const loc = new THREE.Matrix4()

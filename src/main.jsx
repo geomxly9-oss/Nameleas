@@ -5,11 +5,13 @@ import '@fontsource-variable/bodoni-moda/opsz-italic.css'
 import '@fontsource-variable/archivo/wdth.css'
 import './styles/global.css'
 import App from './App'
+import { preloadStudioHDR } from './three/hdr'
 
 async function ready() {
   try {
     await Promise.race([
       Promise.all([
+        preloadStudioHDR(),
         document.fonts.load('500 40px "Bodoni Moda Variable"'),
         document.fonts.load('italic 500 40px "Bodoni Moda Variable"'),
         document.fonts.load('600 40px "Archivo Variable"'),

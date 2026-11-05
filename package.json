@@ -2,17 +2,19 @@
   "name": "velora-time",
   "private": true,
   "version": "1.0.0",
-  "description": "VELORA TIME — luxury Swiss watch maison. Interactive 3D e-commerce experience.",
+  "description": "VELORA TIME \u2014 luxury Swiss watch maison. Interactive 3D e-commerce experience.",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:artifact": "VITE_MEMORY_ROUTER=1 vite build --outDir dist-artifact --emptyOutDir && node scripts/artifact-page.mjs dist-artifact"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",
     "@fontsource-variable/bodoni-moda": "^5.3.0",
     "@gsap/react": "^2.1.2",
+    "@pmndrs/assets": "^1.7.0",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
     "framer-motion": "^14.9.1",

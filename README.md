@@ -13,6 +13,7 @@ npm install
 npm run dev       # http://localhost:5173
 npm run build     # static build in dist/
 npm run preview   # serve the build
+npm run build:artifact  # hosted-preview bundle in dist-artifact/ (in-memory routing)
 ```
 
 The build uses relative paths and hash routing (`#/watch/…`), so `dist/` can be served from any static host or sub-folder (GitHub Pages, Netlify, S3) with no rewrite rules.
@@ -83,6 +84,8 @@ src/
 **One canvas, many views.** Every 3D viewport on a page (stage, product cards, close-ups, movement, limited edition) is a drei `View` rendered into a single fixed WebGL canvas with scissoring. That keeps one WebGL context however many watches are on screen, and offscreen views cost nothing.
 
 **One clock.** Lenis, ScrollTrigger and React Three Fiber all run from the GSAP ticker in a fixed order (scroll, then triggers, then render), so the 3D views never lag behind the DOM while scrolling.
+
+**Lighting.** Reflections come from a real photographed studio HDRI (CC0, Poly Haven via `@pmndrs/assets`), its hottest lights clamped, with softbox strips and magenta/aqua rim lights layered on top.
 
 **Performance.** Card watches mount only when near the viewport and use 512 px textures; geometry, textures and materials are cached per reference; device pixel ratio is capped at 1.75.
 

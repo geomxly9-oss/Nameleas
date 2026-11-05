@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect } from 'react'
-import { HashRouter, Routes, Route, useLocation } from 'react-router'
+import { HashRouter, MemoryRouter, Routes, Route, useLocation } from 'react-router'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Scene3D from './three/scene/Scene3D'
@@ -17,6 +17,9 @@ import NotFound from './pages/NotFound'
 import { initScroll, getLenis } from './lib/scroll'
 
 initScroll()
+
+// Hosted previews only pass plain #name hashes, so they route in memory instead.
+const Router = import.meta.env.VITE_MEMORY_ROUTER ? MemoryRouter : HashRouter
 
 const EASE = [0.76, 0, 0.24, 1]
 
@@ -63,7 +66,7 @@ export default function App() {
     return () => window.removeEventListener('orientationchange', onResize)
   }, [])
   return (
-    <HashRouter>
+    <Router>
       <a className="skip-link" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById('main')?.focus?.(); document.getElementById('main')?.scrollIntoView() }}>
         Skip to content
       </a>
@@ -80,6 +83,6 @@ export default function App() {
       <Toast />
       <Cursor />
       <Preloader />
-    </HashRouter>
+    </Router>
   )
 }
