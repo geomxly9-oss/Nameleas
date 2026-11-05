@@ -1247,6 +1247,119 @@ main {
   opacity: 1;
 }
 
+/* GALLERY (pinned 3D ring) ----------------------------------------- */
+.gallery {
+  --item-h: min(48vh, 480px);
+  height: 100vh;
+  padding: calc(var(--header-h) + 2vh) var(--gutter) 4vh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+}
+.gallery__head {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: grid;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+}
+.gallery__sub {
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  max-width: 34em;
+}
+.gallery__ring {
+  position: relative;
+  perspective: 1500px;
+  perspective-origin: 50% 30%;
+  user-select: none;
+}
+.gallery__item {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  margin: 0;
+  will-change: transform, opacity;
+}
+.gallery__item img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: var(--item-h);
+  width: auto;
+  max-width: none;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.gallery__shadow {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--item-h) / 2 + 10px);
+  width: calc(var(--item-h) * 0.5);
+  height: calc(var(--item-h) * 0.07);
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(20 4 18 / 0.55), transparent);
+  filter: blur(3px);
+}
+.gallery__foot {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+.gallery__caption {
+  display: grid;
+  gap: 4px;
+  min-height: 5.2em;
+}
+.gallery__caption strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-variation-settings: 'opsz' 40;
+  font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+  line-height: 1.1;
+}
+.gallery__caption span:last-child {
+  color: var(--ink-2);
+  font-family: var(--font-display);
+  font-style: italic;
+}
+.gallery__count {
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  font-stretch: 112%;
+  color: var(--ink-3);
+}
+.gallery__progress {
+  width: min(220px, 60vw);
+  height: 2px;
+  background: var(--line);
+  overflow: hidden;
+}
+.gallery__progress b {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+.gallery__credit {
+  font-size: var(--fs-micro);
+  color: var(--ink-3);
+}
+@media (max-width: 640px) {
+  .gallery {
+    --item-h: min(40vh, 340px);
+  }
+}
+
 /* MOVEMENT ---------------------------------------------------------- */
 .movement__grid {
   display: grid;

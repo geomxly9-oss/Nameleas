@@ -10,6 +10,7 @@ import Featured from '../sections/Featured'
 import Craftsmanship from '../sections/Craftsmanship'
 import Components3D from '../sections/Components3D'
 import Collections from '../sections/Collections'
+import Gallery3D, { galleryState } from '../sections/Gallery3D'
 import Movement from '../sections/Movement'
 import BrandStory from '../sections/BrandStory'
 import LimitedEdition from '../sections/LimitedEdition'
@@ -39,6 +40,14 @@ function useScrollScene(root) {
       track('compEntry', '#components', 'top 75%', 'top top')
       ScrollTrigger.create({ trigger: '#components', start: 'top top', end: '+=260%', pin: true, onUpdate: set('comp'), onRefresh: set('comp') })
       track('exit', '#collections', 'top bottom', 'top 35%')
+      ScrollTrigger.create({
+        trigger: '#gallery',
+        start: 'top top',
+        end: '+=420%',
+        pin: true,
+        onUpdate: (s) => (galleryState.p = s.progress),
+        onRefresh: (s) => (galleryState.p = s.progress),
+      })
 
       // Background colour: each section blends its colour in as it arrives.
       const bgs = [...root.current.querySelectorAll('[data-bg]')].map((el) => ({
@@ -99,6 +108,7 @@ export default function Home() {
       <Craftsmanship />
       <Components3D />
       <Collections />
+      <Gallery3D />
       <Movement />
       <BrandStory />
       <LimitedEdition />
