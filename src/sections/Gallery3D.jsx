@@ -1,25 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { onTick } from '../lib/ticker'
+import { WATCHES } from '../data/gallery'
 
 // Scroll progress for the pinned ring, written by the Home scroll scene.
 export const galleryState = { p: 0 }
-
-// Photographs supplied for the gallery. Each watch is credited to its maker.
-const WATCHES = [
-  { src: '01-jacob-co-casino', brand: 'Jacob & Co', note: 'Casino, with a working roulette wheel around the dial' },
-  { src: '02-ak', brand: 'AK', note: 'Hours on turning cylinders above a minutes arc' },
-  { src: '03-the-electricianz', brand: 'The Electricianz', note: 'A grid dial lit in green' },
-  { src: '04-jacob-co-cr7', brand: 'Jacob & Co', note: 'CR7 skeleton with a football-shaped cage' },
-  { src: '05-jacob-co-football', brand: 'Jacob & Co', note: 'Tourbillon at twelve over a green sapphire dial' },
-  { src: '06-jacob-co-world', brand: 'Jacob & Co', note: 'A world map dial with two time zones' },
-  { src: '07-jacob-co-astronomia', brand: 'Jacob & Co', note: 'Astronomia Solar, with gemstone planets in orbit' },
-  { src: '08-ulysse-nardin-freak', brand: 'Ulysse Nardin', note: 'Freak, the movement on show over a blue dial' },
-  { src: '09-richard-mille-rm72', brand: 'Richard Mille', note: 'RM 72-01 chronograph in a baguette-set case' },
-  { src: '10-bonest-gatti', brand: 'Bonest Gatti', note: 'A clear case with a green serpent across the movement' },
-  { src: '11-lucky-harvey', brand: 'Lucky Harvey', note: 'A green serpent across an automatic skeleton dial' },
-  { src: '12-zbicland', brand: 'Zbicland', note: 'Harry Potter edition, a gold serpent over twelve wheels' },
-  { src: '13-louis-moinet', brand: 'Louis Moinet', note: 'Skeleton chronograph in rose gold and red' },
-]
 
 const N = WATCHES.length
 const STEP = (Math.PI * 2) / N

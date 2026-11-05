@@ -1,15 +1,12 @@
-import { useState } from 'react'
-import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
-import { collections, products } from '../data/products'
-import ProductCard from '../components/ProductCard'
+import { useCallback, useState } from 'react'
+import { WATCHES } from '../data/gallery'
+import PhotoCard from '../components/PhotoCard'
+import PhotoViewer from '../components/PhotoViewer'
 import { RevealHeading } from '../components/Reveal'
 
-const TABS = [{ id: 'all', short: 'All watches', blurb: 'Ten references across five collections. Every one of them can be turned, tilted and opened up right here.' }, ...collections]
-
 export default function Collections() {
-  const [tab, setTab] = useState('all')
-  const list = tab === 'all' ? products : products.filter((p) => p.collection === tab)
-  const current = TABS.find((t) => t.id === tab)
+  const [open, setOpen] = useState(null)
+  const close = useCallback(() => setOpen(null), [])
   return (
     <section className="section collections" id="collections" data-bg="#C6F0E4" aria-labelledby="collections-title">
       <div className="wrap">
@@ -19,34 +16,16 @@ export default function Collections() {
               Watch Collections
             </RevealHeading>
           </div>
-          <div style={{ display: 'grid', gap: 18 }}>
-            <AnimatePresence mode="wait">
-              <motion.p key={tab} className="collection-blurb" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }}>
-                {current.blurb}
-              </motion.p>
-            </AnimatePresence>
-            <LayoutGroup>
-              <div className="tabs" role="tablist" aria-label="Filter by collection">
-                {TABS.map((t) => (
-                  <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} aria-controls="collection-grid" onClick={() => setTab(t.id)}>
-                    {tab === t.id && <motion.span layoutId="tab-pill" className="tab-pill" transition={{ type: 'spring', stiffness: 380, damping: 32 }} />}
-                    <span>{t.id === 'all' ? t.short : t.name}</span>
-                  </button>
-                ))}
-              </div>
-            </LayoutGroup>
-          </div>
+          <p className="collection-blurb">Thirteen watches from independent houses. Drag any of them to spin it a full 360°, or open it larger.</p>
         </div>
-        <motion.div id="collection-grid" className="grid-products" role="tabpanel" layout>
-          <AnimatePresence mode="popLayout">
-            {list.map((p, i) => (
-              <motion.div key={p.id} layout initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: i * 0.04 }}>
-                <ProductCard product={p} index={i} />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        <div id="collection-grid" className="grid-photos">
+          {WATCHES.map((w, i) => (
+            <PhotoCard key={w.src} watch={w} index={i} feature={i === 0} onOpen={setOpen} />
+          ))}
+        </div>
+        <p className="collections__credit">Photographs and trademarks belong to their makers.</p>
       </div>
+      <PhotoViewer watches={WATCHES} index={open} onClose={close} onIndex={setOpen} />
     </section>
   )
 }
